@@ -1,0 +1,16 @@
+{
+  "arch": "resnet18",
+  "epochs": 6,
+  "frozen_backbone": true,
+  "dataset": "geraldmc/plantvillage-tiny",
+  "num_classes": 38,
+  "train_images": 1524,
+  "test_images": 376,
+  "top1_accuracy": 0.7926,
+  "device": "cpu",
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "seed": 42,
+  "latency_ms_median": 9.44,
+  "latency_ms_p95": 11.45
+}
