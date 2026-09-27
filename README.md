@@ -1,9 +1,5 @@
 # crop-disease-api
 
-**Live demo:** https://your-demo-url.example.com
-
-Replace that URL after the service is deployed. Interactive API docs stay at `/docs` on the same host.
-
 Upload a leaf photo and the service returns a plant-disease class (or healthy), a confidence score, and a short ranked list. Inference is a ResNet18 checkpoint running on CPU through a small FastAPI app.
 
 ## Problem
