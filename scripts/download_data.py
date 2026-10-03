@@ -41,7 +41,7 @@ def parse_args() -> argparse.Namespace:
         "--max-per-class",
         type=int,
         default=None,
-        help="Optional cap per class, counted across both splits. Useful for a dry run.",
+        help="Optional cap per class and split. Useful for a dry run.",
     )
     return parser.parse_args()
 
@@ -57,7 +57,7 @@ def main() -> None:
         label = str(row["class_label"])
         split = str(row.get("split") or "train")
         if split not in {"train", "test"}:
-            split = "train"
+            raise ValueError(f"Row {index} has unsupported split {split!r}; expected train or test.")
         key = (split, label)
         used = counts.get(key, 0)
         if args.max_per_class is not None and used >= args.max_per_class:

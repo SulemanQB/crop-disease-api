@@ -64,6 +64,7 @@ def resolve_model_path() -> Path:
 
 
 def _load_payload(path: Path) -> dict:
+    # Checkpoint stores labels and preprocessing settings alongside tensors.
     try:
         payload = torch.load(path, map_location="cpu", weights_only=False)
     except TypeError:

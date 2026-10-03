@@ -50,7 +50,7 @@ async def predict(
     file: UploadFile = File(..., description="Leaf image (JPEG, PNG, or WebP)."),
     topk: int = Query(3, ge=1, le=20, description="How many ranked classes to return."),
 ) -> PredictResponse:
-    raw = await file.read()
+    raw = await file.read(MAX_UPLOAD_BYTES + 1)
     if not raw:
         raise HTTPException(status_code=400, detail="Empty upload.")
     if len(raw) > MAX_UPLOAD_BYTES:

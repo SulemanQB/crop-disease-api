@@ -39,12 +39,24 @@ from app.model import IMAGENET_MEAN, IMAGENET_STD, DiseaseClassifier, eval_trans
 
 
 def parse_args() -> argparse.Namespace:
+    def positive_int(value: str) -> int:
+        parsed = int(value)
+        if parsed < 1:
+            raise argparse.ArgumentTypeError("must be at least 1")
+        return parsed
+
+    def positive_float(value: str) -> float:
+        parsed = float(value)
+        if parsed <= 0:
+            raise argparse.ArgumentTypeError("must be greater than 0")
+        return parsed
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, default=Path("data/plantvillage"))
     parser.add_argument("--arch", choices=("resnet18", "efficientnet_b0"), default="resnet18")
-    parser.add_argument("--epochs", type=int, default=6)
-    parser.add_argument("--batch-size", type=int, default=32)
-    parser.add_argument("--lr", type=float, default=1e-3)
+    parser.add_argument("--epochs", type=positive_int, default=6)
+    parser.add_argument("--batch-size", type=positive_int, default=32)
+    parser.add_argument("--lr", type=positive_float, default=1e-3)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output", type=Path, default=Path("artifacts/model.pt"))
     parser.add_argument("--metrics", type=Path, default=Path("artifacts/metrics.json"))
@@ -190,7 +202,6 @@ def main() -> None:
     args = parse_args()
     set_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    torch.set_num_threads(max(1, torch.get_num_threads()))
 
     train_loader, test_loader, labels = make_loaders(args.data_dir, args.batch_size)
     model = build_pretrained(args.arch, len(labels))

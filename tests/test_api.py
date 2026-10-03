@@ -67,6 +67,32 @@ def test_predict_rejects_non_image(client: TestClient) -> None:
     assert response.status_code == 400
 
 
+def test_predict_rejects_empty_upload(client: TestClient) -> None:
+    response = client.post(
+        "/predict",
+        files={"file": ("empty.jpg", b"", "image/jpeg")},
+    )
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Empty upload."
+
+
+def test_predict_rejects_oversized_upload(client: TestClient) -> None:
+    response = client.post(
+        "/predict",
+        files={"file": ("large.jpg", b"x" * (8 * 1024 * 1024 + 1), "image/jpeg")},
+    )
+    assert response.status_code == 413
+
+
+def test_predict_rejects_invalid_topk(client: TestClient) -> None:
+    with FIXTURE.open("rb") as handle:
+        response = client.post(
+            "/predict?topk=21",
+            files={"file": ("sample.jpg", handle, "image/jpeg")},
+        )
+    assert response.status_code == 422
+
+
 def test_openapi_docs(client: TestClient) -> None:
     response = client.get("/docs")
     assert response.status_code == 200
